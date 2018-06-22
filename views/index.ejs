@@ -62,7 +62,7 @@
             <nav>
               <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
                 <a id = "dinexString" class="nav-item nav-link active" id="nav-dinex-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-dinex" aria-selected="true">Dinex ()</a>
-                <a class="nav-item nav-link" id="nav-blocks-tab" data-toggle="tab" href="#nav-blocks" role="tab" aria-controls="nav-blocks" aria-selected="false">Blocks (12)</a>
+                <a id = "blockString" class="nav-item nav-link" id="nav-blocks-tab" data-toggle="tab" href="#nav-blocks" role="tab" aria-controls="nav-blocks" aria-selected="false">Blocks ()</a>
                 <a class="nav-item nav-link" id="nav-sell-tab" data-toggle="tab" href="#nav-sell" role="tab" aria-controls="nav-sell" aria-selected="false">Sell</a>
                 <a class="nav-item nav-link" id="nav-FAQ-tab" data-toggle="tab" href="#nav-FAQ" role="tab" aria-controls="nav-FAQ" aria-selected="false">FAQ</a>
               </div>
@@ -79,7 +79,7 @@
                         Price
                       </div>
                       <div class="col">
-                        <a href = "#" class="text-secondary" onclick="ratioChange()" id = "ratioPress">Ratio <i class="fas fa-caret-up"></i></a>
+                        <a href = "#" class="text-secondary" onclick="ratioChange('dinex')" id = "ratioPressDinex">Ratio <i class="fas fa-caret-up"></i></a>
                       </div>
                     </div></li>
                   </ul>
@@ -103,9 +103,31 @@
 
                 <button type="button" class="btn btn-primary btn-lg" id = "history">History</button>
 
+              </div>
+              <div class="tab-pane fade" id="nav-blocks" role="tabpanel" aria-labelledby="nav-blocks-tab">
+                <div class="shadow p-3 mb-5 bg-white rounded">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><div class="row">
+                      <div class="col" >
+                        <a style = "margin-left: 10">Amount</a>
+                      </div>
+                      <div class="col">
+                        Price
+                      </div>
+                      <div class="col">
+                        <a href = "#" class="text-secondary" onclick="ratioChange('blocks')" id = "ratioPressBlocks">Ratio <i class="fas fa-caret-up"></i></a>
+                      </div>
+                    </div></li>
+                  </ul>
+
+                  <div class="list-group list-group-flush" id = "blocksList">
+
+                  </div>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-lg" id = "history">History</button>
 
               </div>
-              <div class="tab-pane fade" id="nav-blocks" role="tabpanel" aria-labelledby="nav-blocks-tab">2</div>
               <div class="tab-pane fade" id="nav-sell" role="tabpanel" aria-labelledby="nav-sell-tab">
                 <div class="shadow p-3 mb-5 bg-white rounded">
                   <br>
@@ -165,13 +187,20 @@
               <div class="tab-pane fade" id="nav-FAQ" role="tabpanel" aria-labelledby="nav-FAQ-tab">
                 <div class="shadow p-3 mb-5 bg-white rounded">
                   <br>
-                  <p>A tool to connect students who have too much dinex and students who spend too much dinex</p>
+                  <p style = "text-align: left; margin-left: 10px;" class="lead">A tool to connect students who have too much dinex and students who spend too much dinex</p>
                   <br>
-                  <p class="h4" style = "text-align: left; margin-left: 10px;">Buying dinex/blocks</p>
-                  <hr>
+                  <p class="display-4" style = "text-align: left; margin-left: 10px; font-size:22px; font-weight: 400;">Buying dinex/blocks</p>
+                  <p style = "font-size: 9; text-align: left; margin-left: 10px;"><small>Click the offer that you want
+                    to buy and leave your email address. When you verify your email address,
+                     an email regarding the transaction will automatically be sent to both you and the seller.</small></p>
 
+                  <br>
+                  <p class="display-4" style = "text-align: left; margin-left: 10px; font-size:22px; font-weight: 400;">Sell dinex/blocks</p>
+                  <p style = "font-size: 9; text-align: left; margin-left: 10px;"><small>Type in your offer details.
+                    When you verify your email address, your offer will instantly appear on the market.</small></p>
 
-                  </form>
+                  <br>
+
 
                 </div>
               </div>
@@ -232,37 +261,52 @@
     });
 
 
-    function addRatio(rev) {
+    function addRatio(type, rev) {
       adding.once('value', function(snapshot) {
         snapshot.forEach(function(childSnapshot) {
           var childKey = childSnapshot.key;
           var childData = childSnapshot.val();
 
-          processedList = processList(childData, compareRatio, rev);
-          addToWeb(processedList);
-
-          if (childKey == "dinex") {
-            var dinexString = document.getElementById("dinexString");
-            dinexString.innerHTML = "Dinex (" + processedList.length + ")";
+          var processedList;
+          if (childKey == type) {
+            processedList = processList(childData, compareRatio, rev);
+            addToWeb(processedList, type);
           }
 
         });
       });
     }
 
-    var ratioUp = true;
+    var ratioUpDinex = true;
+    var ratioUpBlocks = true;
 
-    function ratioChange() {
-      var currRadio = document.getElementById("ratioPress");
-      if (ratioUp) {
-        currRadio.innerHTML = 'Ratio <i class="fas fa-caret-down"></i>';
-        ratioUp = false;
-        addRatio(true);
+    function ratioChange(type) {
+
+      var currRadio;
+      if (type == "dinex") {
+        currRadio = document.getElementById("ratioPressDinex");
+        if (ratioUpDinex) {
+          currRadio.innerHTML = 'Ratio <i class="fas fa-caret-down"></i>';
+          ratioUpDinex = false;
+          addRatio(type, true);
+        } else {
+          currRadio.innerHTML = 'Ratio <i class="fas fa-caret-up"></i>';
+          ratioUpDinex = true;
+          addRatio(type, false);
+        }
       } else {
-        currRadio.innerHTML = 'Ratio <i class="fas fa-caret-up"></i>';
-        ratioUp = true;
-        addRatio(false);
+        currRadio = document.getElementById("ratioPressBlocks");
+        if (ratioUpBlocks) {
+          currRadio.innerHTML = 'Ratio <i class="fas fa-caret-down"></i>';
+          ratioUpBlocks = false;
+          addRatio(type, true);
+        } else {
+          currRadio.innerHTML = 'Ratio <i class="fas fa-caret-up"></i>';
+          ratioUpBlocks = true;
+          addRatio(type, false);
+        }
       }
+
     }
 
     function validateEmail(email) {
@@ -363,8 +407,14 @@
       return arrAll
     }
 
-    function addToWeb(processList) {
-      var currentDiv = document.getElementById("dinexList");
+    function addToWeb(processList, type) {
+
+      var currentDiv;
+      if (type == "dinex") {
+        currentDiv = document.getElementById("dinexList");
+      } else {
+        currentDiv = document.getElementById("blocksList");
+      }
       currentDiv.innerHTML = "";
 
       for (var i = 0; i < processList.length; i++) {
@@ -391,11 +441,18 @@
           var childData = childSnapshot.val();
 
           processedList = processList(childData, compareRatio, false);
-          addToWeb(processedList);
 
           if (childKey == "dinex") {
+            addToWeb(processedList, "dinex");
+
             var dinexString = document.getElementById("dinexString");
             dinexString.innerHTML = "Dinex (" + processedList.length + ")";
+
+          } else if (childKey == "blocks") {
+            addToWeb(processedList, "blocks");
+
+            var blockString = document.getElementById("blockString");
+            blockString.innerHTML = "Blocks (" + processedList.length + ")";
           }
 
         });
