@@ -13,3 +13,5 @@ Buying dinex/blocks:
 Sell dinex/blocks:
 
 - Type in your offer details. When you verify your email address, your offer will instantly appear on the market.
+
+Can be viewed live here: https://dinexchangeapp.herokuapp.com/
